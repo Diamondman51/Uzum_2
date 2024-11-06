@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from seller.models import Seller, QuantityOfProduct, Property, Product
+from seller.models import Account, QuantityOfProduct, Property, Product
 
 
 # Register your models here.
@@ -14,7 +14,7 @@ class SellerAdmin(admin.ModelAdmin):
     list_editable = ['email', 'phone', 'landmark']
 
 
-admin.site.register(Seller, SellerAdmin)
+admin.site.register(Account, SellerAdmin)
 admin.site.register(QuantityOfProduct)
 admin.site.register(Property)
 admin.site.register(Product)

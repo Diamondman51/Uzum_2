@@ -37,7 +37,12 @@ class SellerManager(BaseUserManager):
         return user
 
 
-class Seller(AbstractBaseUser, PermissionsMixin):
+class Account(AbstractBaseUser, PermissionsMixin):
+    USER_TYPES = (
+        (1, 'Seller'),
+        (2, 'Customer'),
+    )
+    user_type = models.CharField(max_length=10, choices=USER_TYPES)
     company_name = models.CharField(max_length=300, null=True, blank=False, unique=True)
     email = models.EmailField(unique=True, null=True, blank=False)
     phone = models.CharField(max_length=15, unique=True, null=True, blank=True)
@@ -58,28 +63,38 @@ class Seller(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
 
-    # def __str__(self) -> str:
-    #     return f'{self.company_name} {self.email}'
+    def __str__(self) -> str:
+        return f'Company Name: {self.company_name}. Email: {self.email}'
 
     class Meta:
         verbose_name_plural = 'Sellers'
 
 
 class QuantityOfProduct(models.Model):
-    product_id = models.ForeignKey('Product', on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=0)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return f'{self.product} {self.quantity}'
 
 
 class Property(models.Model):
     quantity_id = models.ForeignKey(QuantityOfProduct, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    value = models.CharField(max_length=255)
+    value = models.CharField(max_length=255, blank=False, null=True)
 
     class Meta:
         verbose_name_plural = 'Properties'
 
+    def __str__(self):
+        return f'{self.name} {self.value}'
+
 
 class Product(models.Model):
-    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
+    seller_id = models.ForeignKey(Account, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=False)
+    price = models.DecimalField(max_digits=11, decimal_places=2, blank=False, null=True)
+
+    def __str__(self):
+        return f'{self.id} {self.name}'
