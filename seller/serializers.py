@@ -35,7 +35,11 @@ class QuantityOfProductSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     quantityofproduct_set = QuantityOfProductSerializer(many=True, read_only=True)
+    company_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
-        fields = ["id", "seller_id", "name", "description", "quantityofproduct_set",]
+        fields = ["id", "seller_id", "name", "description",  "company_name", "quantityofproduct_set"]
+
+    def get_company_name(self, obj):
+        return obj.seller_id.company_name
